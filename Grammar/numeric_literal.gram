@@ -1,0 +1,23 @@
+numeric_literal
+https://www.sqlite.org/syntax/numeric-literal.html
+
+
+decimal -> digit decimal
+decimal -> digit '_' decimal
+
+signed_decimal -> decimal
+signed_decimal -> '+' decimal
+signed_decimal -> '-' decimal
+
+hexadecimal -> hexdigit '_' hexadecimal
+hexadecimal -> hexdigit hexadecimal
+
+float -> '.' decimal
+float -> decimal '.' decimal
+float -> decimal
+
+numeric_literal -> float ('e' | 'E') signed_decimal
+numeric_literal -> float
+
+numeric_literal -> ('0x' | '0X') hexadecimal
+

@@ -1,0 +1,102 @@
+expr
+https://www.sqlite.org/lang_expr.html
+literal_value,bind_parameter,select_stmt,funcion_invocation
+
+expr -> literal_value
+expr -> bind_parameter
+expr -> column_name
+expr -> schema_name '.' table_name '.' column_name
+expr -> unary_operator expr
+expr -> expr binary_operator expr
+
+# The syntax diagram has a path for function calls. That one looks like this:
+# expr -> function_name '(' function_arguments ')' filter_clause over_clause
+# expr -> function_name '(' function_arguments ')' filter_clause
+# expr -> function_name '(' function_arguments ')' over_clause
+# expr -> function_name '(' function_arguments ')'
+# This is extremely oversimplified
+
+expr -> funcion_invocation
+
+# the precedence matters a lot for what we are trying to do
+unary_operator -> ('~' | '+' | '-')
+binary_operator -> ('||' | '->' | '->>') 
+binary_operator -> ('*' | '/' | '%')
+binary_operator -> ('+' | '-')
+binary_operator -> ('&' | '|' | '<<' | '>>')
+binary_operator -> ('<' | '>' | '<=' | '>=')    
+binary_operator -> ('=' | '==' | '<>' | '!=')
+
+expr -> expr 'AND' expr
+expr -> expr 'OR' expr
+
+csv -> expr ',' csv
+
+expr -> '(' csv ')'
+expr -> CAST '(' expr 'AS' type_name ')'
+expr -> expr 'COLLATE' collation_name
+
+escape_clause -> 'ESCAPE' expr
+like_clause -> 'LIKE' expr escape_clause
+like_clause -> 'LIKE' expr
+
+glob_clause -> 'GLOB' expr
+like2_clause -> ('REGEXP' | 'MATCH') expr
+
+between_clause -> 'BETWEEN' expr 'AND' expr
+
+in_clause -> IN '(' select_stmt ')'
+in_clause -> IN '(' csv ')'
+in_clause -> IN '('  ')' # I don't know why is this even in the grammar
+
+in_clause -> schema_name '.' table_function '(' csv ')'
+in_clause -> schema_name '.' table_function '(' ')'
+in_clause -> schema_name '.' table_name
+
+in_clause -> table_function '(' csv ')'
+in_clause -> table_function '(' ')'
+in_clause -> table_name
+
+negatable_clause -> between_clause
+negatable_clause -> in_clause
+negatable_clause -> like_clause
+negatable_clause -> like2_clause
+negatable_clause -> glob_clause
+
+expr -> 'NOT' negatable_clause
+expr -> negatable_clause
+
+# is [not] null
+expr -> 'ISNULL'
+expr -> 'NOTNULL'
+expr -> 'NOT' 'NULL'
+
+# is expressions
+expr -> 'IS' 'NOT' 'DISTINCT' 'FROM' expr
+expr -> 'IS' 'NOT' expr
+expr -> 'IS' 'DISTINCT' 'FROM' expr
+expr -> 'IS' expr
+
+exists_query -> 'EXISTS' '(' select_stmt ')'
+expr -> 'NOT' exists_query
+expr -> exists_query
+
+expr -> '(' select_stmt ')' # sub-query
+
+when_then -> 'WHEN' expr 'THEN' expr
+when_then_loop -> when_then when_then_loop
+when_then_loop -> when_then
+when_then_loop_else -> when_then_loop 'ELSE' expr
+when_then_loop_else -> when_then_loop
+
+# case expressions
+expr -> 'CASE' expr when_then_loop_else 'END'
+expr -> 'CASE' when_then_loop_else 'END'
+
+# raise
+raise_function -> 'RAISE' '(' IGNORE ')'
+raise_function -> 'RAISE' '(' ROLLBACK ',' expr ')'
+raise_function -> 'RAISE' '(' ABORT ')'
+raise_function -> 'RAISE' '(' FAIL ')'
+
+expr -> raise_function

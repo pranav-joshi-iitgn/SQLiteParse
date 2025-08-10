@@ -1,0 +1,21 @@
+literal_value, string_literal, blob_literal
+https://sqlite.org/syntax/literal-value.html
+numeric_literal
+
+string -> C string
+string -> ''
+
+string_literal -> '\'' string '\''
+string_literal -> '"' string '"'
+
+blob_literal -> ('x' | 'X') string_literal
+
+literal_value -> numeric_literal
+literal_value -> string_literal
+literal_value -> blob_literal
+literal_value -> 'NULL'
+literal_value -> 'TRUE'
+literal_value -> 'FALSE'
+literal_value -> 'CURRENT_TIME'
+literal_value -> 'CURRENT_DATE'
+literal_value -> 'CURRENT_TIMESTAMP'
