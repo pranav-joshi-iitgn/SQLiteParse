@@ -33,7 +33,7 @@ expr -> expr 'OR' expr
 csv -> expr ',' csv
 
 expr -> '(' csv ')'
-expr -> CAST '(' expr 'AS' type_name ')'
+expr -> 'CAST' '(' expr 'AS' type_name ')'
 expr -> expr 'COLLATE' collation_name
 
 escape_clause -> 'ESCAPE' expr
@@ -41,13 +41,13 @@ like_clause -> 'LIKE' expr escape_clause
 like_clause -> 'LIKE' expr
 
 glob_clause -> 'GLOB' expr
-like2_clause -> ('REGEXP' | 'MATCH') expr
+match_clause -> ('REGEXP' | 'MATCH') expr
 
 between_clause -> 'BETWEEN' expr 'AND' expr
 
-in_clause -> IN '(' select_stmt ')'
-in_clause -> IN '(' csv ')'
-in_clause -> IN '('  ')' # I don't know why is this even in the grammar
+in_clause -> 'IN' '(' select_stmt ')'
+in_clause -> 'IN' '(' csv ')'
+in_clause -> 'IN' '('  ')' # I don't know why is this even in the grammar
 
 in_clause -> schema_name '.' table_function '(' csv ')'
 in_clause -> schema_name '.' table_function '(' ')'
@@ -60,7 +60,7 @@ in_clause -> table_name
 negatable_clause -> between_clause
 negatable_clause -> in_clause
 negatable_clause -> like_clause
-negatable_clause -> like2_clause
+negatable_clause -> match_clause
 negatable_clause -> glob_clause
 
 expr -> 'NOT' negatable_clause
@@ -94,9 +94,9 @@ expr -> 'CASE' expr when_then_loop_else 'END'
 expr -> 'CASE' when_then_loop_else 'END'
 
 # raise
-raise_function -> 'RAISE' '(' IGNORE ')'
-raise_function -> 'RAISE' '(' ROLLBACK ',' expr ')'
-raise_function -> 'RAISE' '(' ABORT ')'
-raise_function -> 'RAISE' '(' FAIL ')'
+raise_function -> 'RAISE' '(' 'IGNORE' ')'
+raise_function -> 'RAISE' '(' 'ROLLBACK' ',' expr ')'
+raise_function -> 'RAISE' '(' 'ABORT' ')'
+raise_function -> 'RAISE' '(' 'FAIL' ')'
 
 expr -> raise_function

@@ -18,6 +18,14 @@ The file format is like this :
 10. The non-terminal `A` represents "any alphabet"
 11. The non-terminals `digit` and `hexdigit` represent the digits in base 10 and 16 .
 
+There is a VSCode extension that comes with this repo. You can install that as :
+
+```
+code --install-extension gram-0.0.1.vsix
+```
+
+That will help keep your sanity.
+
 ## TODO
 
 This is a to-do list of all non-terminals that need to be understood, along with the SQLite documentation page that they are found on.
